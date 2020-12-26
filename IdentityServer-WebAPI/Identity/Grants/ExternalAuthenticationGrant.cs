@@ -1,4 +1,5 @@
-﻿using IdentityServer4.Models;
+﻿using IdentityServer_WebAPI.Identity.Interfaces;
+using IdentityServer4.Models;
 using IdentityServer4.Validation;
 using System;
 using System.Linq;
@@ -9,6 +10,16 @@ namespace IdentityServer_WebAPI.Identity.Grants
     public class ExternalAuthenticationGrant : IExtensionGrantValidator
     {
         public string GrantType => "external";
+
+        private readonly Func<string, IExternalTokenProvider> _tokenServiceAccessor;
+
+        public ExternalAuthenticationGrant(
+          Func<string, IExternalTokenProvider> tokenServiceAccessor
+
+          )
+        {
+            _tokenServiceAccessor = tokenServiceAccessor ?? throw new ArgumentNullException(nameof(tokenServiceAccessor));
+        }
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)
         {
@@ -34,6 +45,16 @@ namespace IdentityServer_WebAPI.Identity.Grants
                 context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest, ExternalGrantErrors.ProviderNotFound);
                 return;
             }
+
+            var tokenService = _tokenServiceAccessor(providerName);
+            var userInfo = await tokenService.GetUserInfoAsync(externalToken);
+            if (userInfo == null)
+            {
+                context.Result = new GrantValidationResult(TokenRequestErrors.InvalidRequest, ExternalGrantErrors.UserInfoNotRetrieved);
+                return;
+            }
+
+
         }
     }
 }
