@@ -1,4 +1,5 @@
-﻿using IdentityServer_WebAPI.Identity.Interfaces;
+﻿using IdentityServer_WebAPI.Identity.Grants;
+using IdentityServer_WebAPI.Identity.Interfaces;
 using IdentityServer_WebAPI.Identity.Services;
 using IdentityServer_WebAPI.Identity.Stores;
 using IdentityServer4.Services;
@@ -16,6 +17,11 @@ namespace IdentityServer_WebAPI.Identity
         public static IIdentityServerBuilder AddCustomProfileService(this IIdentityServerBuilder services)
         {
             services.AddProfileService<CustomProfileService>();
+            return services;
+        }
+        public static IIdentityServerBuilder AddTokenExchangeForExternalProviders(this IIdentityServerBuilder services)
+        {
+            services.AddExtensionGrantValidator<ExternalAuthenticationGrant>();
             return services;
         }
     }

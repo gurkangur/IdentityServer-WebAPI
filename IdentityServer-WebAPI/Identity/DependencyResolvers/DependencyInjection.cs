@@ -53,7 +53,7 @@ namespace IdentityServer_WebAPI.Identity.DependencyResolvers
                             ClientName = "PostMan Login",
                             PostLogoutRedirectUris = { "http://localhost:5000/signout-callback-oidc" },
                             ClientUri = null,
-                            AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                            AllowedGrantTypes = { "password", "external" },
                             AllowAccessTokensViaBrowser = true,
                             AlwaysSendClientClaims = true,
                             AlwaysIncludeUserClaimsInIdToken = true,
@@ -64,6 +64,7 @@ namespace IdentityServer_WebAPI.Identity.DependencyResolvers
                     })
                     .AddCustomProfileService()
                     .AddUserStore()
+                    .AddTokenExchangeForExternalProviders()
                     .AddTestUsers(new List<TestUser>
                     {
                         new TestUser
@@ -84,7 +85,8 @@ namespace IdentityServer_WebAPI.Identity.DependencyResolvers
                 services.AddIdentityServer()
                     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                     .AddCustomProfileService()
-                    .AddUserStore();
+                    .AddUserStore()
+                    .AddTokenExchangeForExternalProviders();
             }
             services.AddTransient<IProfileService, CustomProfileService>();
             services.AddAuthentication()
