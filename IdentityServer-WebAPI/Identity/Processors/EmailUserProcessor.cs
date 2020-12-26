@@ -8,9 +8,9 @@ namespace IdentityServer_WebAPI.Identity.Processors
 {
     public class EmailUserProcessor : IEmailUserProcessor
     {
-        private readonly IUserStore _userStore;
+        private readonly IUserManager _userStore;
 
-        public EmailUserProcessor(IUserStore userStore)
+        public EmailUserProcessor(IUserManager userStore)
         {
             _userStore = userStore;
         }

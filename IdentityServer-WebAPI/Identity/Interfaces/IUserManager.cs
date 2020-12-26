@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer_WebAPI.Identity.Interfaces
 {
-    public interface IUserStore
+    public interface IUserManager
     {
         Task<List<Claim>> GetUserClaimsByIdAsync(string userId);
         Task<string> FindByIdAsync(string userId);

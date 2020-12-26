@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer_WebAPI.Identity.Stores
 {
-    public class UserStore : IUserStore
+    public class UserManagerService : IUserManager
     {
         public async Task<string> CreateExternalUserAsync(string externalId, string email, string provider)
         {

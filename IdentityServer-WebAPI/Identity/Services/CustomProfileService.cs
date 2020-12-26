@@ -8,9 +8,9 @@ namespace IdentityServer_WebAPI.Identity.Services
 {
     public class CustomProfileService : IProfileService
     {
-        private readonly IUserStore _userStore;
+        private readonly IUserManager _userStore;
 
-        public CustomProfileService(IUserStore userStore)
+        public CustomProfileService(IUserManager userStore)
         {
             _userStore = userStore;
         }

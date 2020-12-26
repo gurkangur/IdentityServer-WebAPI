@@ -17,7 +17,7 @@ namespace IdentityServer_WebAPI.Identity
     {
         public static IIdentityServerBuilder AddUserStore(this IIdentityServerBuilder services)
         {
-            services.Services.AddScoped<IUserStore, UserStore>();
+            services.Services.AddScoped<IUserManager, UserManagerService>();
             return services;
         }
         public static IIdentityServerBuilder AddCustomProfileService(this IIdentityServerBuilder services)

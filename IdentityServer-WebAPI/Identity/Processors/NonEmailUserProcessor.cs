@@ -10,8 +10,8 @@ namespace IdentityServer_WebAPI.Identity.Processors
 {
     public class NonEmailUserProcessor : INonEmailUserProcessor
     {
-        private readonly IUserStore _userStore;
-        public NonEmailUserProcessor(IUserStore userStore)
+        private readonly IUserManager _userStore;
+        public NonEmailUserProcessor(IUserManager userStore)
         {
             _userStore = userStore ?? throw new ArgumentNullException(nameof(userStore));
         }
