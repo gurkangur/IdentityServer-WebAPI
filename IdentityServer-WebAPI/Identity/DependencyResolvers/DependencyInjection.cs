@@ -1,8 +1,10 @@
 ﻿using IdentityModel;
 using IdentityServer_WebAPI.Identity.Data.Contexts;
 using IdentityServer_WebAPI.Identity.Data.Entities;
+using IdentityServer_WebAPI.Identity.Services;
 using IdentityServer4;
 using IdentityServer4.Models;
+using IdentityServer4.Services;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -60,6 +62,8 @@ namespace IdentityServer_WebAPI.Identity.DependencyResolvers
 
                         });
                     })
+                    .AddCustomProfileService()
+                    .AddUserStore()
                     .AddTestUsers(new List<TestUser>
                     {
                         new TestUser
@@ -78,8 +82,11 @@ namespace IdentityServer_WebAPI.Identity.DependencyResolvers
             else
             {
                 services.AddIdentityServer()
-                    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
+                    .AddCustomProfileService()
+                    .AddUserStore();
             }
+            services.AddTransient<IProfileService, CustomProfileService>();
             services.AddAuthentication()
                 .AddIdentityServerJwt();
             return services;
