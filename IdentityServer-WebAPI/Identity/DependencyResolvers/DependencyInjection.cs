@@ -65,6 +65,7 @@ namespace IdentityServer_WebAPI.Identity.DependencyResolvers
                     .AddCustomProfileService()
                     .AddUserStore()
                     .AddTokenExchangeForExternalProviders()
+                    .AddExternalTokenProviders()
                     .AddTestUsers(new List<TestUser>
                     {
                         new TestUser
@@ -86,7 +87,8 @@ namespace IdentityServer_WebAPI.Identity.DependencyResolvers
                     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                     .AddCustomProfileService()
                     .AddUserStore()
-                    .AddTokenExchangeForExternalProviders();
+                    .AddTokenExchangeForExternalProviders()
+                    .AddExternalTokenProviders();
             }
             services.AddTransient<IProfileService, CustomProfileService>();
             services.AddAuthentication()

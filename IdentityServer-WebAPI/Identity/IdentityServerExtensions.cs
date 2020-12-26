@@ -31,6 +31,7 @@ namespace IdentityServer_WebAPI.Identity
         }
         public static IIdentityServerBuilder AddExternalTokenProviders(this IIdentityServerBuilder services)
         {
+            services.Services.AddScoped<FacebookAuthProvider>();
             services.Services.AddScoped<Func<string, IExternalTokenProvider>>(serviceProvider => key =>
             {
                 var name = $"{key}AuthProvider";
