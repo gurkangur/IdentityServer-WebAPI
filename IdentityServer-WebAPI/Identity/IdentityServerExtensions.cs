@@ -1,5 +1,6 @@
 ﻿using IdentityServer_WebAPI.Identity.Grants;
 using IdentityServer_WebAPI.Identity.Interfaces;
+using IdentityServer_WebAPI.Identity.Processors;
 using IdentityServer_WebAPI.Identity.Providers;
 using IdentityServer_WebAPI.Identity.Services;
 using IdentityServer_WebAPI.Identity.Stores;
@@ -27,6 +28,8 @@ namespace IdentityServer_WebAPI.Identity
         public static IIdentityServerBuilder AddTokenExchangeForExternalProviders(this IIdentityServerBuilder services)
         {
             services.AddExtensionGrantValidator<ExternalAuthenticationGrant>();
+            services.Services.AddScoped<INonEmailUserProcessor, NonEmailUserProcessor>();
+            services.Services.AddScoped<IEmailUserProcessor, EmailUserProcessor>();
             return services;
         }
         public static IIdentityServerBuilder AddExternalTokenProviders(this IIdentityServerBuilder services)

@@ -12,13 +12,21 @@ namespace IdentityServer_WebAPI.Identity.Grants
         public string GrantType => "external";
 
         private readonly Func<string, IExternalTokenProvider> _tokenServiceAccessor;
+        private readonly IUserStore _userStore;
+        private readonly IEmailUserProcessor _emailUserProcessor;
+        private readonly INonEmailUserProcessor _nonEmailUserProcessor;
 
         public ExternalAuthenticationGrant(
-          Func<string, IExternalTokenProvider> tokenServiceAccessor
-
+            Func<string, IExternalTokenProvider> tokenServiceAccessor,
+            IUserStore userStore,
+            IEmailUserProcessor emailUserProcessor,
+            INonEmailUserProcessor nonEmailUserProcessor
           )
         {
             _tokenServiceAccessor = tokenServiceAccessor ?? throw new ArgumentNullException(nameof(tokenServiceAccessor));
+            _userStore = userStore ?? throw new ArgumentNullException(nameof(userStore));
+            _emailUserProcessor = emailUserProcessor ?? throw new ArgumentNullException(nameof(emailUserProcessor));
+            _nonEmailUserProcessor = nonEmailUserProcessor ?? throw new ArgumentNullException(nameof(nonEmailUserProcessor));
         }
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)
@@ -54,7 +62,24 @@ namespace IdentityServer_WebAPI.Identity.Grants
                 return;
             }
 
+            var externalId = userInfo.Value<string>("id");
+            if (!string.IsNullOrWhiteSpace(externalId))
+            {
+                var existingUserId = await _userStore.FindByProviderAsync(providerName, externalId);
+                if (!string.IsNullOrWhiteSpace(existingUserId))
+                {
+                    var claims = await _userStore.GetUserClaimsByExternalIdAsync(externalId, providerName);
+                    context.Result = new GrantValidationResult(existingUserId, providerName, claims, providerName, null);
+                }
+            }
 
+            if (string.IsNullOrWhiteSpace(requestEmail))
+            {
+                context.Result = await _nonEmailUserProcessor.ProcessAsync(userInfo, providerName);
+                return;
+            }
+
+            context.Result = await _emailUserProcessor.ProcessAsync(userInfo, requestEmail, providerName);
         }
     }
 }
