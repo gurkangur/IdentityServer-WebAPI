@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Identity\Data\Configurations\" />
     <Folder Include="Identity\Data\Contexts\" />
   </ItemGroup>
 </Project>
