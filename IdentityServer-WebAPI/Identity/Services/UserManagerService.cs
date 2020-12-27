@@ -9,7 +9,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace IdentityServer_WebAPI.Identity.Stores
+namespace IdentityServer_WebAPI.Identity.Services
 {
     public class UserManagerService : IUserManager
     {

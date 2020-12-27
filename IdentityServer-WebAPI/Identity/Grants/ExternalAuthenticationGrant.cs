@@ -12,19 +12,19 @@ namespace IdentityServer_WebAPI.Identity.Grants
         public string GrantType => "external";
 
         private readonly Func<string, IExternalTokenProvider> _tokenServiceAccessor;
-        private readonly IUserManager _userStore;
+        private readonly IUserManager _userManager;
         private readonly IEmailUserProcessor _emailUserProcessor;
         private readonly INonEmailUserProcessor _nonEmailUserProcessor;
 
         public ExternalAuthenticationGrant(
             Func<string, IExternalTokenProvider> tokenServiceAccessor,
-            IUserManager userStore,
+            IUserManager userManager,
             IEmailUserProcessor emailUserProcessor,
             INonEmailUserProcessor nonEmailUserProcessor
           )
         {
             _tokenServiceAccessor = tokenServiceAccessor ?? throw new ArgumentNullException(nameof(tokenServiceAccessor));
-            _userStore = userStore ?? throw new ArgumentNullException(nameof(userStore));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _emailUserProcessor = emailUserProcessor ?? throw new ArgumentNullException(nameof(emailUserProcessor));
             _nonEmailUserProcessor = nonEmailUserProcessor ?? throw new ArgumentNullException(nameof(nonEmailUserProcessor));
         }
@@ -67,10 +67,10 @@ namespace IdentityServer_WebAPI.Identity.Grants
                 var externalId = userInfo.Value<string>("id");
                 if (!string.IsNullOrWhiteSpace(externalId))
                 {
-                    var existingUserId = await _userStore.FindByProviderAsync(providerName, externalId);
+                    var existingUserId = await _userManager.FindByProviderAsync(providerName, externalId);
                     if (!string.IsNullOrWhiteSpace(existingUserId))
                     {
-                        var claims = await _userStore.GetUserClaimsByExternalIdAsync(externalId, providerName);
+                        var claims = await _userManager.GetUserClaimsByExternalIdAsync(externalId, providerName);
                         context.Result = new GrantValidationResult(existingUserId, providerName, claims, providerName, null);
                     }
                 }

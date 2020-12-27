@@ -10,10 +10,10 @@ namespace IdentityServer_WebAPI.Identity.Processors
 {
     public class NonEmailUserProcessor : INonEmailUserProcessor
     {
-        private readonly IUserManager _userStore;
-        public NonEmailUserProcessor(IUserManager userStore)
+        private readonly IUserManager _userManager;
+        public NonEmailUserProcessor(IUserManager userManager)
         {
-            _userStore = userStore ?? throw new ArgumentNullException(nameof(userStore));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
         public async Task<GrantValidationResult> ProcessAsync(JObject userInfo, string provider)
         {
@@ -26,7 +26,7 @@ namespace IdentityServer_WebAPI.Identity.Processors
 
             if (string.IsNullOrWhiteSpace(userEmail))
             {
-                var existingUserId = await _userStore.FindByProviderAsync(provider, userExternalId);
+                var existingUserId = await _userManager.FindByProviderAsync(provider, userExternalId);
                 if (string.IsNullOrWhiteSpace(existingUserId))
                 {
                     var customResponse = new Dictionary<string, object>
@@ -39,16 +39,16 @@ namespace IdentityServer_WebAPI.Identity.Processors
                 }
                 else
                 {
-                    var userClaims = await _userStore.GetUserClaimsByExternalIdAsync(userExternalId, provider);
+                    var userClaims = await _userManager.GetUserClaimsByExternalIdAsync(userExternalId, provider);
                     return new GrantValidationResult(existingUserId, provider, userClaims, provider, null);
                 }
 
             }
 
-            var newUserId = await _userStore.CreateExternalUserAsync(userExternalId, userEmail, provider);
+            var newUserId = await _userManager.CreateExternalUserAsync(userExternalId, userEmail, provider);
             if (!string.IsNullOrWhiteSpace(newUserId))
             {
-                var claims = await _userStore.GetUserClaimsByExternalIdAsync(userExternalId, provider);
+                var claims = await _userManager.GetUserClaimsByExternalIdAsync(userExternalId, provider);
                 return new GrantValidationResult(newUserId, provider, claims, provider, null);
             }
 
