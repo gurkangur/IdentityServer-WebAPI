@@ -3,8 +3,6 @@ using IdentityServer_WebAPI.Identity.Interfaces;
 using IdentityServer_WebAPI.Identity.Processors;
 using IdentityServer_WebAPI.Identity.Providers;
 using IdentityServer_WebAPI.Identity.Services;
-using IdentityServer_WebAPI.Identity.Stores;
-using IdentityServer4.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -15,11 +13,6 @@ namespace IdentityServer_WebAPI.Identity
 {
     public static class IdentityServerExtensions
     {
-        public static IIdentityServerBuilder AddUserStore(this IIdentityServerBuilder services)
-        {
-            services.Services.AddScoped<IUserManager, UserManagerService>();
-            return services;
-        }
         public static IIdentityServerBuilder AddCustomProfileService(this IIdentityServerBuilder services)
         {
             services.AddProfileService<CustomProfileService>();
