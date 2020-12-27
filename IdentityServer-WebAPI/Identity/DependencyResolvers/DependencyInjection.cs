@@ -25,8 +25,8 @@ namespace IdentityServer_WebAPI.Identity.DependencyResolvers
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            
 
+            services.AddTransient<Interfaces.ITokenService, TokenService>();
             if (environment.IsDevelopment())
             {
                 services.AddIdentityServer()
