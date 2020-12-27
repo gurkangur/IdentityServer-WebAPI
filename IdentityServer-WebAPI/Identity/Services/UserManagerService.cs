@@ -153,5 +153,24 @@ namespace IdentityServer_WebAPI.Identity.Services
         {
             return await _userManager.GetUserIdAsync(user);
         }
+
+        public async Task<List<OperationClaim>> GetUserOperationClaimsByIdAsync(Guid id)
+        {
+            return await (from userClaim in _applicationDbContext.UserClaims
+                          join operationClaim in _applicationDbContext.OperationClaims on userClaim.OperationClaimId equals operationClaim.Id
+                          where userClaim.UserId == id
+                          select operationClaim).ToListAsync();
+        }
+
+        public async Task<ApplicationUser> GetUserWithOperationClaims(Guid id)
+        {
+            var user = await _applicationDbContext.Users.SingleOrDefaultAsync(x => x.Id == id);
+            user.ApplicationUserClaims = _applicationDbContext.UserClaims.Where(x => x.UserId == user.Id).ToList();
+            user.ApplicationUserClaims.ToList().ForEach(userclaim =>
+            {
+                userclaim.OperationClaim = _applicationDbContext.OperationClaims.SingleOrDefault(x => x.Id == userclaim.OperationClaimId);
+            });
+            return user;
+        }
     }
 }

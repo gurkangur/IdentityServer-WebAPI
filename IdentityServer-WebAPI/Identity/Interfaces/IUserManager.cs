@@ -1,5 +1,6 @@
 ﻿using IdentityServer_WebAPI.Identity.Data.Entities;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -21,5 +22,7 @@ namespace IdentityServer_WebAPI.Identity.Interfaces
         Task<IdentityResult> DeleteUserAsync(string userId);
         Task<string> CreateUserAsync(string userName, string password);
         Task<IList<string>> GetUserRoles(string userId);
+        Task<List<OperationClaim>> GetUserOperationClaimsByIdAsync(Guid id);
+        Task<ApplicationUser> GetUserWithOperationClaims(Guid id);
     }
 }
